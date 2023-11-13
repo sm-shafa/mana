@@ -11,10 +11,9 @@ namespace ManaCoreWebApplication.Repository
         {
         }
 
-        public IQueryable<ProductDto> GetOne(int id)
+        public Product? GetOne(int id)
         {
-            var q = _context.Products.Where(o => o.Id == id).Select(e => new ProductDto {Id = e.Id});
-            return q;
+            return _context.Products.SingleOrDefault(o => o.Id == id);
         }
 
         public IEnumerable<Product> GetProducts(string name)

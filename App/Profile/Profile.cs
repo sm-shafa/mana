@@ -8,5 +8,6 @@ public class Profile: AutoMapper.Profile
     public Profile()
     {
         CreateMap<AddOrModifyCategoryCommand, Category>();
+        CreateMap<CreateOrUpdateProductCommand, Product>();
     }
 }

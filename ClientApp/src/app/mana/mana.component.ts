@@ -9,13 +9,21 @@ import {GetPage, IPage} from "../shared/Model/mana-model";
 })
 export class ManaComponent implements OnInit {
   public categoryList: any = [];
+  public productList: any = [];
   public filters = new GetPage();
   public showHeaders = true;
-  public headers = [
+  public categoryHeaders = [
     'Id',
     'Name'
   ];
-  @ViewChildren('col') public cols!: QueryList<TemplateRef<any>>
+
+  public productHeaders = [
+    'Id',
+    'Name',
+    'categoryId'
+  ];
+  @ViewChildren('categoryCol') public categoryCols!: QueryList<TemplateRef<any>>
+  @ViewChildren('productCol') public productCols!: QueryList<TemplateRef<any>>
 
   constructor(
     private manaService: ManaService,
@@ -29,10 +37,12 @@ export class ManaComponent implements OnInit {
   }
 
   public getData(): void {
-
-
     this.manaService.getCategories(this.filters).toPromise().then((res) => {
       this.categoryList = res;
+    }, err => console.log(err.errors));
+
+    this.manaService.getProducts(this.filters).toPromise().then((res) => {
+      this.productList = res;
     }, err => console.log(err.errors));
   }
 

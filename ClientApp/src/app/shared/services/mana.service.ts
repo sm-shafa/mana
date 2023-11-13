@@ -25,4 +25,13 @@ export class ManaService {
     );
   }
 
+  public getProducts(body: IPage): Observable<any> {
+    const headers = {'content-type': 'application/json'}
+    const data = JSON.stringify(body);
+    return this.http.post(`${this.apiUrl}Products/GetProducts`, data, {'headers':headers}).pipe(map((result) => {
+        return result;
+      })
+    );
+  }
+
 }

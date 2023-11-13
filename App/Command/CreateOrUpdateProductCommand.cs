@@ -2,18 +2,20 @@
 
 namespace ManaCoreWebApplication.App.Command;
 
-public class AddOrModifyProductCommand: IRequest
+public class CreateOrUpdateProductCommand: IRequest
 {
-    public AddOrModifyProductCommand()
+    public CreateOrUpdateProductCommand()
     {
     }
 
-    public AddOrModifyProductCommand(string name, int categoryId)
+    public CreateOrUpdateProductCommand(int? id, string name, int categoryId)
     {
+        Id = id;
         Name = name;
         CategoryId = categoryId;
     }
     
+    public int? Id { set; get; } 
     public string Name { set; get; }
     public int CategoryId { set; get; }
 }

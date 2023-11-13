@@ -1,6 +1,7 @@
 ﻿using ManaCoreWebApplication.App.Dto;
 using ManaCoreWebApplication.Data;
 using ManaCoreWebApplication.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace ManaCoreWebApplication.Repository
 {
@@ -10,9 +11,9 @@ namespace ManaCoreWebApplication.Repository
         {
         }
 
-        public IQueryable<CategoryDto> GetOne(int id)
+        public Category? GetOne(int id)
         {
-            return _context.Categories.Where(o => o.Id == id).Select(e => new CategoryDto() {Id = e.Id});
+            return _context.Categories.AsNoTracking().SingleOrDefault(o => o.Id == id);
         }
     }
 }
