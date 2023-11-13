@@ -1,11 +1,10 @@
+using System.Reflection;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.EntityFrameworkCore;
 using ManaCoreWebApplication.Data;
 using ManaCoreWebApplication.Models;
-using Microsoft.OpenApi.Models;
 using ManaCoreWebApplication.Repository;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,33 +29,29 @@ builder.Services.AddAuthentication()
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
-// builder.Services.AddSwaggerGen();
-// Register the Swagger generator, defining 1 or more Swagger documents
-builder.Services.AddSwaggerGen(c =>
-{
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });                
-});
+builder.Services.AddSwagger(builder.Configuration);
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
 
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 
 var app = builder.Build();
 
+
+string pathBase = string.Empty;
+app.UseSwagger()
+    .UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint(
+            $"{(!string.IsNullOrEmpty(pathBase) ? pathBase : string.Empty)}/swagger/v1/swagger.json",
+            "Mana.API V1");
+    });
+
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
-    app.UseSwagger();
-    // app.UseSwaggerUI();
-    app.UseSwaggerUI(options =>
-    {
-        options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
-        options.RoutePrefix = string.Empty;
-    });
-    // app.UseSwaggerUI(c =>
-    // {
-    //     c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-    // });
 }
 else
 {
@@ -86,3 +81,54 @@ app.MapRazorPages();
 app.MapFallbackToFile("index.html");
 
 app.Run();
+
+
+public static class CustomExtensionMethods
+{
+    public static IServiceCollection AddSwagger(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddSwaggerGen(c =>
+        {
+            c.SwaggerDoc("v1", new OpenApiInfo
+            {
+                Title = "Backend Assessment HTTP API",
+                Version = "v1",
+                Description = "The Backend Assessment HTTP API."
+            });
+            c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            {
+                Description = @"JWT Authorization header using the Bearer scheme. \r\n\r\n 
+                      Enter 'Bearer' [space] and then your token in the text input below.
+                      \r\n\r\nExample: 'Bearer 12345abcdef'",
+                Name = "Authorization",
+                In = ParameterLocation.Header,
+                Type = SecuritySchemeType.ApiKey,
+                Scheme = "Bearer"
+            });
+            c.AddSecurityRequirement(new OpenApiSecurityRequirement()
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        },
+                        Scheme = "oauth2",
+                        Name = "Bearer",
+                        In = ParameterLocation.Header,
+
+                    },
+                    new List<string>()
+                }
+            });
+            c.MapType<DateOnly>(() => new OpenApiSchema { Format = "date", Type = "string" });
+            c.MapType<TimeOnly>(() => new OpenApiSchema { Format = "time", Type = "string" });
+            var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+            var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+        });
+
+        return services;
+    }
+}
