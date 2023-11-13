@@ -1,4 +1,5 @@
-﻿using ManaCoreWebApplication.App.Query;
+﻿using ManaCoreWebApplication.App.Command;
+using ManaCoreWebApplication.App.Query;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,6 +14,13 @@ public class CategoryController : ControllerBase
 
     public CategoryController(IMediator mediator) => _mediator = mediator;
 
+    [HttpPost]
+    [Route("Create")]
+    public async Task Create(AddOrModifyCategoryCommand request, CancellationToken cancellationToken)
+    {
+        await _mediator.Send(request, cancellationToken);
+    }
+    
     [HttpGet]
     public async Task<ActionResult> GetCategories()
     {
