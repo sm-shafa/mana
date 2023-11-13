@@ -1,4 +1,6 @@
 ﻿using ManaCoreWebApplication.App.Command;
+using ManaCoreWebApplication.App.Dto;
+using ManaCoreWebApplication.App.Dto.Pagination;
 using ManaCoreWebApplication.App.Query;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -21,11 +23,47 @@ public class CategoryController : ControllerBase
         await _mediator.Send(request, cancellationToken);
     }
     
-    [HttpGet]
-    public async Task<ActionResult> GetCategories()
+    [HttpPut]
+    [Route("UpdateCategory")]
+    public async Task UpdateCategory(AddOrModifyCategoryCommand request, CancellationToken cancellationToken)
     {
-        var products = await _mediator.Send(new GetCategoriesQuery());
-        return Ok(products);
+        await _mediator.Send(request, cancellationToken);
+    }
+    
+    [HttpPost]
+    [Route("GetCategories")]
+    public async Task<ActionResult<PagedResultDto<CategoryDto>>> GetCategories(GetCategoriesQuery getCategoriesQuery,
+        CancellationToken cancellationToken)
+    {
+        var result = await _mediator.Send(getCategoriesQuery, cancellationToken);
+
+        return Ok(result);
+    }
+
+    [HttpGet]
+    [Route("GetCategory")]
+    public async Task<ActionResult<CategoryDto>> Get(int categoryId, CancellationToken cancellationToken)
+    {
+        var result = await _mediator.Send(new GetCategoryQuery(categoryId), cancellationToken);
+
+        return Ok(result);
+    }
+
+    [HttpGet]
+    [Route("GetCategories")]
+    public async Task<ActionResult<PagedResultDto<CategoryDto>>> GetCategories(int pageIndex, int pageSize,
+        string? filter, string? sorting, CancellationToken cancellationToken)
+    {
+        GetCategoriesQuery getCategoriesQuery = new GetCategoriesQuery()
+        {
+            PageIndex = pageIndex,
+            PageSize = pageSize,
+            Filter = filter,
+            Sorting = sorting
+        };
+        var result = await _mediator.Send(getCategoriesQuery, cancellationToken);
+        
+        return Ok(result);
     }
 }
 

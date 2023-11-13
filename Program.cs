@@ -71,6 +71,14 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthentication();
+app.UseCors(builder =>
+{
+    builder //.WithOrigins("https://localhost:port")
+        .SetIsOriginAllowed(_ => true)
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .AllowCredentials();
+});
 app.UseIdentityServer();
 app.UseAuthorization();
 
@@ -92,9 +100,9 @@ public static class CustomExtensionMethods
         {
             c.SwaggerDoc("v1", new OpenApiInfo
             {
-                Title = "Backend Assessment HTTP API",
+                Title = "Mana Assessment HTTP API",
                 Version = "v1",
-                Description = "The Backend Assessment HTTP API."
+                Description = "The Mana Assessment HTTP API."
             });
             c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {

@@ -8,10 +8,12 @@ public class AddOrModifyProductCommand: IRequest
     {
     }
 
-    public AddOrModifyProductCommand(string title)
+    public AddOrModifyProductCommand(string name, int categoryId)
     {
-        Title = title;
+        Name = name;
+        CategoryId = categoryId;
     }
     
-    public string Title { set; get; }
+    public string Name { set; get; }
+    public int CategoryId { set; get; }
 }

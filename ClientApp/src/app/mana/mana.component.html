@@ -1,0 +1,21 @@
+<p>Show tables</p>
+
+<ng-container *ngIf="categoryList && categoryList.data">
+  <P><b>Category List</b></P>
+  <app-data-table
+    [dataSource]="categoryList.data" [colsTemplate]="cols" [headers]="headers" [showHeaders]="showHeaders"
+    [count]="categoryList.count" [resetPaging]="filters.pageIndex === 1 ? true : false" [itemsPerPage]="5"
+    (pageChanged)="filters.pageIndex = $event;getData()">
+  </app-data-table>
+
+  <ng-template #col let-data="data">
+    <span class="font-weight-bold">{{data.id}}</span>
+  </ng-template>
+
+  <ng-template #col let-data="data">
+    <div class="center font-weight-bold">
+      {{data.name}}
+    </div>
+  </ng-template>
+
+</ng-container>

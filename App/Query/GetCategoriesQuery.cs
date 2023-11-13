@@ -1,8 +1,12 @@
-﻿using ManaCoreWebApplication.App.Dto.Pagination;
+﻿using ManaCoreWebApplication.App.Dto;
+using ManaCoreWebApplication.App.Dto.Pagination;
 
 namespace ManaCoreWebApplication.App.Query;
 
-public class GetCategoriesQuery: PagingParamQuery<PagedResultDto<Models.Category>>
+public class GetCategoriesQuery: PagingParamQuery<PagedResultDto<CategoryDto>>
 {
     public GetCategoriesQuery(){}
+    
+    public string? Filter { get; set; }
+    public string? Sorting { get; set; }
 }

@@ -1,0 +1,26 @@
+<table class="table" [ngClass]="styleType === 'one' ? 'one' : 'two'">
+  <ng-container *ngIf="showHeaders">
+    <thead>
+    <tr>
+      <th *ngIf="showNumbers">#</th>
+      <th *ngFor="let heading of headers">
+        {{heading}}
+      </th>
+    </tr>
+    </thead>
+  </ng-container>
+  <tbody>
+  <tr *ngFor="let row of dataSource | paginate: { itemsPerPage: itemsPerPage, currentPage: page, totalItems: count }; index as i">
+    <td *ngIf="showNumbers">{{i + 1}}</td>
+    <td *ngFor="let col of colsTemplate">
+      <ng-template [ngTemplateOutlet]="col" [ngTemplateOutletContext]="{data:row}">
+      </ng-template>
+    </td>
+  </tr>
+  </tbody>
+</table>
+
+<div class="mt-25 horizontalCenter" *ngIf="count > itemsPerPage">
+  <pagination-controls previousLabel="قبلی" nextLabel="بعدی" (pageChange)="changePage($event)" [maxSize]="5">
+  </pagination-controls>
+</div>

@@ -8,11 +8,13 @@ public class AddOrModifyCategoryCommand : IRequest
     {
     }
 
-    public AddOrModifyCategoryCommand(string name)
+    public AddOrModifyCategoryCommand(int? id, string name)
     {
+        Id = id;
         Name = name;
     }
     
+    public int? Id { set; get; }
     public string Name { set; get; }
     
 }

@@ -18,7 +18,17 @@ public class AddOrModifyCategoryCommandHandler: IRequestHandler<AddOrModifyCateg
     public async Task Handle(AddOrModifyCategoryCommand request, CancellationToken cancellationToken)
     {
         var category = _mapper.Map<Models.Category>(request);
-        var registered = await _unitOfWork.Categories.AddAsync(category);
+        var oldCategory = _unitOfWork.Categories.GetAll().SingleOrDefault(cat => cat.Id == category.Id);
+        if (oldCategory is not null)
+        {
+            oldCategory.Name = category.Name;
+            oldCategory.Products = category.Products;
+        }
+        else
+        {
+            await _unitOfWork.Categories.AddAsync(category);
+        }
+
         _unitOfWork.Complete();
     } 
     
