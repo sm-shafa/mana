@@ -63,5 +63,15 @@ namespace ManaCoreWebApplication.Controllers
 
             return Ok(result);
         }
+        
+        [HttpPost]
+        [Route("GetProductsDapper")]
+        public async Task<ActionResult<List<ProductDto>>> GetProductsDapper(GetProductsDapperQuery getProductsDapperQuery,
+            CancellationToken cancellationToken)
+        {
+            var result = await _mediator.Send(getProductsDapperQuery, cancellationToken);
+
+            return Ok(result);
+        }
     }
 }

@@ -65,5 +65,17 @@ public class CategoryController : ControllerBase
         
         return Ok(result);
     }
+    
+    [HttpGet]
+    [Route("GetCategoriesProducts")]
+    public async Task<ActionResult<PagedResultDto<CategoryDto>>> GetCategoriesProducts(CancellationToken cancellationToken)
+    {
+        GetCategoryProductsDapperQuery getCategoryProductsDapperQuery = new GetCategoryProductsDapperQuery()
+        {
+        };
+        var result = await _mediator.Send(getCategoryProductsDapperQuery, cancellationToken);
+        
+        return Ok(result);
+    }
 }
 

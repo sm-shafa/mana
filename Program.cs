@@ -15,6 +15,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDbContext<IDbContext, ManaDbContext>(options =>
     options.UseSqlServer(connectionString));
+builder.Services.AddSingleton<DapperContext>();
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
@@ -127,13 +128,12 @@ public static class CustomExtensionMethods
                         Scheme = "oauth2",
                         Name = "Bearer",
                         In = ParameterLocation.Header,
-
                     },
                     new List<string>()
                 }
             });
-            c.MapType<DateOnly>(() => new OpenApiSchema { Format = "date", Type = "string" });
-            c.MapType<TimeOnly>(() => new OpenApiSchema { Format = "time", Type = "string" });
+            c.MapType<DateOnly>(() => new OpenApiSchema {Format = "date", Type = "string"});
+            c.MapType<TimeOnly>(() => new OpenApiSchema {Format = "time", Type = "string"});
             var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
             var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
         });
